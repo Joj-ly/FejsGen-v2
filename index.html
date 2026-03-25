@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FejsGen</title>
+    
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Caudex:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="page-shell frame-outer">
+        <div class="page-middle frame-middle">
+            <div class="page-content">
+
+                <!-- HEADER -->
+                <header id="app-header">
+                    <div class="logo" id="author-logo">
+                        FejsGen 1.0
+                        <span class="logo-tooltip">Utvecklad av Joel Johansson</span>
+                    </div>
+
+                    <div class="theme-title">
+                        <img src="assets/ui/header_03.svg" alt="Faces of the North" class="header-svg">
+                    </div>
+
+                    <!-- ANNO-text ersätter gamla knappen -->
+                    <div class="anno-label">ANNO 2026</div>
+                </header>
+
+                <!-- SLOT-KNAPP MELLAN HEADER OCH GRID -->
+                <div id="slot-bar">
+                    <button class="slot-btn" id="generate-btn">
+                        <div class="slot-windows">
+                            <div class="slot-window"><div class="slot-reel" id="reel-0"></div></div>
+                            <div class="slot-window"><div class="slot-reel" id="reel-1"></div></div>
+                            <div class="slot-window"><div class="slot-reel" id="reel-2"></div></div>
+                        </div>
+                        <span class="btn-label" id="btnLabel">Generate New Faces</span>
+                    </button>
+                </div>
+
+                <!-- CONTENT WRAPPER -->
+                <div class="content-wrapper">
+
+                    <!-- SAVED LIST PANEL -->
+                    <aside id="saved-panel">
+                        <div class="saved-frame-outer">
+                            <div class="saved-frame-inner">
+                                <h3>Saved Characters</h3>
+                                <p class="saved-description">Klicka på en karaktär för att spara den. Ladda ner alla som ZIP-fil.</p>
+                                <ul id="saved-list"></ul>
+                                <button id="download-saved">Download Saved List</button>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <!-- MAIN CONTENT -->
+                    <main>
+                        <div id="portrait-grid" class="grid-container">
+                            <!-- Cards injected by ui.js -->
+                        </div>
+                    </main>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- POPUP / DETAIL PANEL -->
+    <div id="detail-panel" class="detail hidden">
+        <div class="frame-outer">
+            <div class="frame-middle">
+                <div class="detail-content">
+
+                    <button class="close-btn" onclick="closeDetailPanel()">X</button>
+
+                    <h2 id="char-name"></h2>
+                    <h3 id="char-title"></h3>
+                    <div id="char-origin" style="margin-bottom: 10px; font-weight: 600;"></div>
+
+                    <canvas id="detail-canvas" width="256" height="256"></canvas>
+
+                    <button id="save-from-popup" class="save-btn">Save Character</button>
+
+                    <p id="char-story" style="margin-top: 10px; line-height: 1.4;"></p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="constants.js"></script>
+    <script src="generator.js"></script>
+    <script src="ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</body>
+</html>

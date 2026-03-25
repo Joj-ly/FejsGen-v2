@@ -1,0 +1,643 @@
+/* --------------------------------------------------
+   GLOBALT
+-------------------------------------------------- */
+
+:root {
+    --card-width: 180px;
+    --card-height: 220px;
+    --spacing-sm: clamp(8px, 2vw, 16px);
+    --spacing-md: clamp(12px, 3vw, 24px);
+    --spacing-lg: clamp(20px, 5vw, 40px);
+    --page-margin: clamp(6px, 1.5vw, 12px);
+}
+
+html {
+    box-sizing: border-box;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Caudex", serif;
+    font-weight: 400;
+    background: url("assets/ui/bg_paper.png");
+    background-repeat: repeat;
+    background-size: auto;
+    background-attachment: fixed;
+    color: #222;
+    font-size: clamp(14px, 2vw, 16px);
+}
+
+h1, h2, h3 {
+    font-family: "Caudex", serif;
+    font-weight: 400;
+    margin: 0;
+    padding: 0;
+}
+
+/* Knappar – dubbel ram som saved-frame (yttre 2px + inre 1px, mellanrum) */
+button {
+    font-family: "Caudex", serif;
+    color: #302821;
+    padding: 12px 22px;
+    border: 2px solid #302821;
+    outline: 1px solid #302821;
+    outline-offset: -4px;
+    background: url("assets/ui/bg_paper.png");
+    background-repeat: repeat;
+    border-radius: 0;
+    cursor: pointer;
+    font-size: clamp(14px, 1.9vw, 17px);
+    transition: background 0.2s ease;
+}
+
+button:hover {
+    background: #dad7bb;
+}
+
+button:active {
+    background: #af8c5d;
+}
+
+
+/* --------------------------------------------------
+   SKISS-LAYOUT (3-lagers ram runt hela sidan)
+-------------------------------------------------- */
+
+.page-shell {
+    margin: var(--page-margin);
+    min-height: calc(100vh - (2 * var(--page-margin)));
+    display: flex;
+    border: 5px solid #302821;   /* yttersta – tjockast */
+    padding: 3px;
+}
+
+.page-middle {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid #302821;   /* mellersta */
+    padding: 3px;
+}
+
+.page-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border: 0.5px solid #302821; /* innersta – tunnast */
+    padding: var(--spacing-md);
+}
+
+
+/* --------------------------------------------------
+   HEADER - MEGA-SIZE (1200PX + REN HOVER)
+-------------------------------------------------- */
+
+#app-header {
+    position: relative;
+    z-index: 10;
+    
+    /* Centrerar hela raden (Namn + Bild + Knapp) */
+    display: flex;
+    flex-direction: row; 
+    align-items: center; 
+    justify-content: center; 
+    
+    /* Justera avståndet mellan texten, den stora bilden och knappen */
+    gap: clamp(20px, 6vw, 80px); 
+    width: 100%;
+    
+    /* LYFT UPP HELA BYGGET */
+    margin-top: -60px; 
+    padding: 0 var(--spacing-md);
+}
+
+/* Ditt namn (Vänster sida) */
+#app-header #author-logo {
+    position: relative;
+    font-size: 14px;
+    font-weight: 700;
+    color: #302821;
+    white-space: nowrap;
+    cursor: help;
+    flex: 0 1 auto;
+}
+
+/* REN HOVER (INGEN BAKGRUNDSBOX) */
+#app-header .logo-tooltip {
+    display: none; 
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 100%; 
+    width: auto;
+    white-space: nowrap;
+    
+    /* Minimalistisk styling */
+    padding: 5px 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    color: #302821; 
+    font-size: 11px;
+    font-weight: 400;
+    z-index: 100;
+    pointer-events: none;
+}
+
+#app-header #author-logo:hover .logo-tooltip {
+    display: block;
+}
+
+/* MEGA SVG - 1200PX */
+.header-svg {
+    /* Vi sätter bredden till 1000px men ser till att den inte kraschar skärmen */
+    width: clamp(150px, 50vw, 800px);
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    transition: width 0.1s ease-out;
+}
+
+/* SVG-behållaren i mitten */
+#app-header .theme-title {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+/* Knappen (Höger sida) */
+#app-header #generate-btn {
+    flex: 0 1 auto;
+    white-space: nowrap;
+}
+
+/* MOBIL-ANPASSNING (Stapla vertikalt när det blir för trångt) */
+@media (max-width: 900px) {
+    #app-header {
+        flex-direction: column;
+        gap: 20px;
+        margin-top: 0; /* Ta bort den negativa marginalen på små skärmar */
+        padding-top: 20px;
+    }
+    
+    .header-svg {
+        width: 80vw; /* Gör den mer hanterbar på telefonen */
+    }
+}
+/* --------------------------------------------------
+   CONTENT WRAPPER
+-------------------------------------------------- */
+
+.content-wrapper {
+    display: flex;
+    gap: var(--spacing-md);
+    padding: 0;
+    align-items: flex-start;
+    margin-top: var(--spacing-md);
+}
+
+@media (max-width: 768px) {
+    .content-wrapper {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+}
+
+#saved-panel {
+    width: 220px;
+    flex-shrink: 0;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    min-width: 0;
+    width: 100%;
+    margin-right: 220px; /* ← lägg till denna */
+}
+
+@media (max-width: 768px) {
+    #saved-panel {
+        width: 100%;
+        max-height: 200px;
+    }
+    main {
+        margin-right: 0; /* ← lägg till denna */
+    }
+}
+
+
+/* --------------------------------------------------
+   SAVED LIST PANEL (LEFT SIDEBAR)
+-------------------------------------------------- */
+
+#saved-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+/* Yttersta ramen */
+.saved-frame-outer {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 2px;
+    border: 2px solid #302821;
+    background: url("assets/ui/bg_paper.png");
+    background-size: cover;
+}
+
+/* Innersta ramen */
+.saved-frame-inner {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 20px;
+    border: 0.5px solid #302821;
+    background: url("assets/ui/bg_paper.png");
+    background-repeat: repeat;
+    background-size: auto;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    .saved-frame-inner {
+        max-height: 180px;
+    }
+}
+
+#saved-panel h3 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 18px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+#saved-panel .saved-description {
+    font-size: 12px;
+    color: #555;
+    line-height: 1.35;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+}
+
+#saved-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+#saved-list li {
+    padding: 6px 0;
+    border-bottom: 1px solid #302821;
+    font-size: 14px;
+}
+
+#download-saved {
+    margin-top: 12px;
+    width: 100%;
+    padding: 10px 14px;
+    flex-shrink: 0;
+}
+
+
+/* --------------------------------------------------
+   3-LAYER FRAME SYSTEM (för popup etc.)
+-------------------------------------------------- */
+
+.frame-outer {
+    padding: 2px;
+    border: 5px solid #302821;
+    border-radius: 0;
+    background: url("assets/ui/bg_paper.png");
+    background-size: cover;
+}
+
+.frame-middle {
+    padding: 2px;
+    border: 2px solid #302821;
+    border-radius: 0;
+    background: url("assets/ui/bg_paper.png");
+    background-repeat: repeat;
+    background-size: auto;
+}
+
+/* HOVER ENDAST PÅ CARDS */
+.grid-container .frame-middle {
+    display: inline-block;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.grid-container .frame-middle:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(48, 40, 33, 0.35);
+}
+
+
+/* --------------------------------------------------
+   GRID MED PORTRÄTT
+-------------------------------------------------- */
+
+.grid-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    padding: var(--page-margin);
+    justify-content: center;
+    align-content: flex-start;
+    max-height: calc(100vh - 180px);
+    min-height: 300px;
+    overflow-y: auto;
+    margin: 0 auto;
+    max-width: 1280px;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .grid-container {
+        padding: var(--page-margin);
+        max-height: calc(100vh - 280px);
+    }
+}
+
+.portrait-card {
+    background: url("assets/ui/bg_paper.png");
+    padding: 18px;
+    text-align: center;
+    border: 0.5px solid #302821;
+    border-radius: 0;
+    width: var(--card-width);
+    height: var(--card-height);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+}
+
+.portrait-card:hover {
+    transform: none;
+}
+
+.portrait-card .portrait-canvas,
+.portrait-card canvas {
+    width: 128px;
+    height: 128px;
+    flex-shrink: 0;
+    display: block;
+}
+
+.portrait-name {
+    font-weight: 600;
+    margin-top: 8px;
+    font-size: 14px;
+    line-height: 1.2;
+    height: 2.4em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    width: 100%;
+}
+
+.portrait-title {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.2;
+    height: 1.2em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+}
+
+
+/* --------------------------------------------------
+   POPUP / DETAIL PANEL
+-------------------------------------------------- */
+
+.detail {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+    padding: var(--spacing-md);
+    overflow-y: auto;
+}
+
+.detail.hidden {
+    display: none;
+}
+
+.detail-content {
+    background: url("assets/ui/bg_paper.png");
+    background-size: cover;
+    padding: clamp(20px, 4vw, 36px);
+    text-align: center;
+    border: 0.5px solid #302821;
+    border-radius: 0;
+    position: relative;
+    max-width: min(460px, calc(100vw - 40px));
+    width: 100%;
+    margin: auto;
+}
+
+.detail-content::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.85);
+    z-index: -1;
+}
+
+.close-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-family: "Caudex", serif;
+    background: #e74c3c;
+    color: #fff;
+    border: 2px solid #302821;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    font-weight: bold;
+    box-shadow: inset 0 0 0 0.5px #302821;
+}
+
+.close-btn:hover {
+    background: #c0392b;
+}
+
+#detail-canvas {
+    width: min(256px, 80vw) !important;
+    height: min(256px, 80vw) !important;
+    max-width: 256px;
+    max-height: 256px;
+    border-radius: 2px;
+    display: block;
+    margin: var(--spacing-md) auto;
+}
+
+#char-story {
+    max-width: 550px;
+    font-size: 14px;
+    color: #444;
+    margin-top: 10px;
+    line-height: 1.5;
+    text-align: left;
+    margin: 0 auto;
+}
+
+.save-btn,
+#save-from-popup {
+    margin: 10px auto 20px auto;
+    padding: 10px 20px;
+    font-size: 15px;
+    display: block;
+}
+
+
+/* --------------------------------------------------
+   SPARAD LISTA — ITEMS
+-------------------------------------------------- */
+
+#saved-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px;
+    margin-bottom: 6px;
+    border: 1px solid #302821;
+    background: rgba(255,255,255,0.2);
+}
+
+#saved-list li canvas {
+    flex-shrink: 0;
+    border: 0.5px solid #302821;
+}
+
+#saved-list .saved-info {
+    flex: 1;
+    min-width: 0;
+}
+
+#saved-list .saved-name {
+    font-weight: 600;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#saved-list .saved-title {
+    font-size: 11px;
+    color: #666;
+}
+
+#saved-list .saved-remove {
+    margin-top: 4px;
+    padding: 4px 10px;
+    font-size: 11px;
+    border: 1px solid #302821;
+    outline: none;
+}
+
+.anno-label {
+    font-family: "Caudex", serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #302821;
+    letter-spacing: 0.15em;
+    justify-self: end;
+}
+
+#slot-bar {
+    display: flex;
+    justify-content: center;
+    padding: 16px 0 8px 0;
+}
+
+.slot-btn {
+    font-family: "Caudex", serif;
+    color: #302821;
+    border: 2px solid #302821;
+    outline: 1px solid #302821;
+    outline-offset: -4px;
+    background: url("assets/ui/bg_paper.png");
+    cursor: pointer;
+    border-radius: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    height: 52px;
+    transition: background 0.2s;
+}
+
+.slot-btn:hover { background: #dad7bb; }
+.slot-btn:active { background: #af8c5d; }
+
+.slot-windows {
+    display: flex;
+    border-right: 2px solid #302821;
+}
+
+.slot-window {
+    width: 48px;
+    height: 52px;
+    overflow: hidden;
+    position: relative;
+    background: #ede8da;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slot-window + .slot-window {
+    border-left: 1px solid #6b5740;
+}
+
+.slot-reel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    top: 0;
+}
+
+.slot-symbol {
+    width: 48px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.btn-label {
+    padding: 0 20px;
+    font-size: 17px;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+}
