@@ -78,7 +78,7 @@ function triggerSlot() {
     if (!btn) return;
 
     btn.disabled = true;
-    label.textContent = 'Drar...';
+    label.textContent = 'Summon...';
 
     const promises = [0, 1, 2].map(i => {
         const reelEl = document.getElementById(`reel-${i}`);
@@ -220,7 +220,7 @@ function closeDetailPanel() {
 function saveCharacter(p, canvas) {
     const alreadySaved = savedCharacters.some(c => c.name.fullName === p.name.fullName);
     if (alreadySaved) {
-        alert(`${p.name.fullName} är redan sparad!`);
+        alert(`${p.name.fullName} is already saved!`);
         return;
     }
 
@@ -255,7 +255,7 @@ function updateSavedList() {
         info.innerHTML = `
             <div class="saved-name">${p.name.fullName}</div>
             <div class="saved-title">${p.title}</div>
-            <button class="saved-remove" onclick="removeSaved(${index})">✕ Ta bort</button>
+            <button class="saved-remove" onclick="removeSaved(${index})">✕ Remove</button>
         `;
 
         li.appendChild(miniCanvas);
@@ -283,7 +283,7 @@ function removeSaved(index) {
 
 async function downloadSaved() {
     if (savedCharacters.length === 0) {
-        alert("Inga sparade karaktärer!");
+        alert("No characters saved!");
         return;
     }
 
