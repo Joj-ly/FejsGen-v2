@@ -9,19 +9,37 @@ window.addEventListener("DOMContentLoaded", () => {
     const btn = document.getElementById("generate-btn");
     if (btn) btn.addEventListener("click", triggerSlot);
 
+    // Position hint flush to the right of the centered button
+    const hint = document.getElementById("slot-hint");
+    if (btn && hint) {
+        const offset = btn.offsetWidth / 2 + 14;
+        hint.style.transform = `translateX(${offset}px)`;
+    }
+
     const downloadBtn = document.getElementById("download-saved");
     if (downloadBtn) downloadBtn.addEventListener("click", downloadSaved);
 
     // Sätt startsymbol på alla 3 hjul
     [0, 1, 2].forEach(i => {
         const reel = document.getElementById(`reel-${i}`);
-        if (reel) buildReel(reel, ['⚔️']);
+        if (reel) buildReel(reel, ['?']);
     });
 });
 
-// Symbolarrayen kan innehålla emoji ELLER sökvägar till SVG/PNG-filer
-// Exempel SVG: 'assets/ui/slots/sword.svg'
-const symbols = ['⚔️','🪙','💀','🛡️','🗡️','🍺','🎲','🗺️','🏹'];
+// SVG-symboler från slots-mappen
+const symbols = [
+    'assets/ui/slots/skull.svg',
+    'assets/ui/slots/dead.svg',
+    'assets/ui/slots/happy.svg',
+    'assets/ui/slots/star.svg',
+    'assets/ui/slots/green.svg'
+];
+
+// Möjliga landningssymboler – hjulet stannar på happy eller star
+const LANDING_SYMBOLS = [
+    'assets/ui/slots/happy.svg',
+    'assets/ui/slots/star.svg'
+];
 
 // Varje hjul har olika längd → stannar vid olika tillfällen (vänster först, höger sist)
 const REEL_LENGTHS = [22, 30, 38];
@@ -33,7 +51,6 @@ function makeSymbolEl(s) {
         // SVG eller PNG-fil
         const img = document.createElement('img');
         img.src = s;
-        img.style.cssText = 'width:32px;height:32px;object-fit:contain;';
         d.appendChild(img);
     } else {
         d.textContent = s;
@@ -56,13 +73,13 @@ function animateReel(reelEl, seq) {
 
         function step() {
             if (idx >= seq.length - 1) {
-                reelEl.style.transform = `translateY(${-(seq.length - 1) * 52}px)`;
+                reelEl.style.transform = `translateY(${-(seq.length - 1) * 70}px)`;
                 resolve();
                 return;
             }
             idx++;
             reelEl.style.transition = `transform ${interval}ms linear`;
-            reelEl.style.transform = `translateY(${-idx * 52}px)`;
+            reelEl.style.transform = `translateY(${-idx * 70}px)`;
             if (idx > seq.length - 8) interval = Math.min(interval + 30, 300);
             else if (idx < 5) interval = Math.max(interval - 10, 45);
             setTimeout(step, interval);
@@ -80,6 +97,9 @@ function triggerSlot() {
     btn.disabled = true;
     label.textContent = 'Summon...';
 
+    const hint = document.getElementById('slot-hint');
+    if (hint) hint.classList.add('hidden');
+
     const promises = [0, 1, 2].map(i => {
         const reelEl = document.getElementById(`reel-${i}`);
         if (!reelEl) return Promise.resolve();
@@ -87,7 +107,9 @@ function triggerSlot() {
         const len = REEL_LENGTHS[i];
         const seq = [];
         for (let j = 0; j < len; j++) seq.push(symbols[Math.floor(Math.random() * symbols.length)]);
-        seq.push('⚔️'); // landningssymbol
+        // Landningssymbol: slumpmässig bland alla symboler
+        const landing = symbols[Math.floor(Math.random() * symbols.length)];
+        seq.push(landing);
 
         buildReel(reelEl, seq);
         return animateReel(reelEl, seq);
