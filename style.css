@@ -223,14 +223,14 @@ button:active {
     }
 }
 
-/* Save-knappen: dold på desktop, visas på mobil */
+/* Save-knappen: dold på desktop, visas på mobil under gridet */
 #save-toggle-btn {
     display: none;
 }
 
 @media (max-width: 900px) {
     #slot-bar {
-        justify-content: space-between;
+        justify-content: center;
         padding: 12px var(--page-margin);
     }
 
@@ -238,8 +238,17 @@ button:active {
         display: none;
     }
 
+    #generate-btn {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
     #save-toggle-btn {
         display: flex;
+        width: 100%;
+        box-sizing: border-box;
+        justify-content: center;
+        margin-top: var(--spacing-sm);
     }
 
     /* Dölj saved sidebar på mobil */
@@ -249,6 +258,7 @@ button:active {
 
     main {
         margin-right: 0 !important;
+        width: 100%;
     }
 }
 
