@@ -2,17 +2,21 @@
    FEJSGEN CONSTANTS — VERSION 4
 -------------------------------------------------- */
 
-const layers = ['ears', 'heads', 'marks', 'eyes', 'noses', 'mouths', 'beards', 'hair'];
-const layerCounts = {
-    ears: 4,
-    heads: 6,
-    marks: 5,
-    eyes: 5,
-    noses: 4,
-    mouths: 5,
-    beards: 5,
-    hair: 7
-};
+const layers = ['ears', 'heads', 'marks', 'eyes', 'mouths', 'beards', 'mustaches', 'noses', 'hair'];
+// Fylls i automatiskt vid start — behöver inte uppdateras manuellt
+let layerCounts = {};
+
+async function detectLayerCounts() {
+    for (const layer of layers) {
+        let n = 0;
+        while (true) {
+            const res = await fetch(`assets/faces/${layer}/${n + 1}.svg`, { method: 'HEAD' });
+            if (!res.ok) break;
+            n++;
+        }
+        layerCounts[layer] = n;
+    }
+}
 
 /* ----------------------------------------------
    RANDOM HELPER

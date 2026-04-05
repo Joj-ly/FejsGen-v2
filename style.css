@@ -337,10 +337,16 @@ main {
     background-size: auto;
 }
 
+@keyframes card-appear {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
 /* HOVER ENDAST PÅ CARDS */
 .grid-container .frame-middle {
     display: inline-block;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    animation: card-appear 0.35s ease-out both;
 }
 
 .grid-container .frame-middle:hover {

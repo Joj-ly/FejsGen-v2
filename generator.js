@@ -2,6 +2,25 @@
 // FEJSGEN GENERATOR LOGIK
 // --------------------------------------------------
 
+// Shufflad pool per lager — undviker upprepningar
+// Varje lager har en "kortlek" som delas ut i slumpad ordning.
+// När leken är tom blandas den om.
+const layerPools = {};
+
+function getNextFromPool(layer) {
+    if (!layerPools[layer] || layerPools[layer].length === 0) {
+        const count = layerCounts[layer];
+        const arr = Array.from({ length: count }, (_, i) => i + 1);
+        // Fisher-Yates shuffle
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        layerPools[layer] = arr;
+    }
+    return layerPools[layer].pop();
+}
+
 function getRandomHairColor() {
     const rand = Math.random();
     let category =
@@ -28,15 +47,17 @@ function createPortrait() {
     const story = generateStory(origin, profession);
 
     // 4. Slump-flaggor
-    const hasMarks  = Math.random() < 0.4;
-    const flipMarks = Math.random() < 0.5;
-    const hasHair   = Math.random() < 0.85;
-    const hasBeard  = Math.random() < 0.4;
-    const flipHair  = Math.random() < 0.5;
-    const flipBeard = Math.random() < 0.5;
-    const flipEyes  = Math.random() < 0.5;
-    const flipMouth = Math.random() < 0.5;
-    const flipEars  = Math.random() < 0.5;
+    const hasMarks     = Math.random() < 0.4;
+    const flipMarks    = Math.random() < 0.5;
+    const hasHair      = Math.random() < 0.85;
+    const hasBeard     = Math.random() < 0.4;
+    const hasMustache  = Math.random() < 0.35;
+    const flipHair     = Math.random() < 0.5;
+    const flipBeard    = Math.random() < 0.5;
+    const flipMustache = Math.random() < 0.5;
+    const flipEyes     = Math.random() < 0.5;
+    const flipMouth    = Math.random() < 0.5;
+    const flipEars     = Math.random() < 0.5;
 
     // 5. Returnera karaktären
     return {
@@ -46,13 +67,14 @@ function createPortrait() {
         story: story,
         decks: layers.reduce((acc, layer) => ({
             ...acc,
-            [layer]: Math.floor(Math.random() * layerCounts[layer]) + 1
+            [layer]: getNextFromPool(layer)
         }), {}),
         skin: randomFrom(skinTones),
         hair: getRandomHairColor(),
-        hasMarks,  flipMarks,
-        hasHair,   flipHair,
-        hasBeard,  flipBeard,
+        hasMarks,     flipMarks,
+        hasHair,      flipHair,
+        hasBeard,     flipBeard,
+        hasMustache,  flipMustache,
         flipEyes,
         flipMouth,
         flipEars
@@ -76,9 +98,10 @@ async function drawFace(canvas, decks, skinColor, hairColor, p) {
     for (const layer of layers) {
 
         // Hoppa över lager baserat på flaggor
-        if (layer === 'marks'  && !p.hasMarks) continue;
-        if (layer === 'hair'   && !p.hasHair)  continue;
-        if (layer === 'beards' && !p.hasBeard) continue;
+        if (layer === 'marks'     && !p.hasMarks)    continue;
+        if (layer === 'hair'      && !p.hasHair)     continue;
+        if (layer === 'beards'    && !p.hasBeard)    continue;
+        if (layer === 'mustaches' && !p.hasMustache) continue;
 
         const fileNum = decks[layer];
         if (!fileNum) continue;
@@ -93,15 +116,16 @@ async function drawFace(canvas, decks, skinColor, hairColor, p) {
         if (!img) continue;
 
         const isHud = ['heads', 'ears', 'noses'].includes(layer);
-        const isHar = ['hair', 'beards'].includes(layer);
+        const isHar = ['hair', 'beards', 'mustaches'].includes(layer);
 
         const shouldFlip =
-            (layer === 'marks'  && p.flipMarks)  ||
-            (layer === 'hair'   && p.flipHair)   ||
-            (layer === 'beards' && p.flipBeard)  ||
-            (layer === 'eyes'   && p.flipEyes)   ||
-            (layer === 'mouths' && p.flipMouth)  ||
-            (layer === 'ears'   && p.flipEars);
+            (layer === 'marks'     && p.flipMarks)    ||
+            (layer === 'hair'      && p.flipHair)     ||
+            (layer === 'beards'    && p.flipBeard)    ||
+            (layer === 'mustaches' && p.flipMustache) ||
+            (layer === 'eyes'      && p.flipEyes)     ||
+            (layer === 'mouths'    && p.flipMouth)    ||
+            (layer === 'ears'      && p.flipEars);
 
         // Bygg lagret på temp-canvas så färg + spegling hanteras tillsammans
         const temp = document.createElement('canvas');

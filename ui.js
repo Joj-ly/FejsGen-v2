@@ -5,7 +5,9 @@
 let savedCharacters = [];
 
 // När sidan laddas: koppla knapparna
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
+    await detectLayerCounts();
+
     const btn = document.getElementById("generate-btn");
     if (btn) btn.addEventListener("click", triggerSlot);
 
@@ -156,10 +158,11 @@ function updatePortraitGrid(portraits) {
 
     grid.innerHTML = "";
 
-    portraits.forEach(async p => {
+    portraits.forEach(async (p, i) => {
 
         const middle = document.createElement("div");
         middle.className = "frame-middle";
+        middle.style.animationDelay = `${i * 40}ms`;
 
         const card = document.createElement("div");
         card.className = "portrait-card";
