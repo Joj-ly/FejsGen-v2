@@ -21,6 +21,15 @@ window.addEventListener("DOMContentLoaded", async () => {
     const downloadBtn = document.getElementById("download-saved");
     if (downloadBtn) downloadBtn.addEventListener("click", downloadSaved);
 
+    const saveToggleBtn = document.getElementById("save-toggle-btn");
+    if (saveToggleBtn) saveToggleBtn.addEventListener("click", openSavedOverlay);
+
+    const savedOverlayClose = document.getElementById("saved-overlay-close");
+    if (savedOverlayClose) savedOverlayClose.addEventListener("click", closeSavedOverlay);
+
+    const downloadMobileBtn = document.getElementById("download-saved-mobile");
+    if (downloadMobileBtn) downloadMobileBtn.addEventListener("click", downloadSaved);
+
     // Sätt startsymbol på alla 3 hjul
     [0, 1, 2].forEach(i => {
         const reel = document.getElementById(`reel-${i}`);
@@ -299,6 +308,59 @@ function updateSavedList() {
 function removeSaved(index) {
     savedCharacters.splice(index, 1);
     updateSavedList();
+}
+
+
+// --------------------------------------------------
+// MOBILE SAVED OVERLAY
+// --------------------------------------------------
+
+function openSavedOverlay() {
+    const overlay = document.getElementById("saved-overlay");
+    if (overlay) overlay.classList.remove("hidden");
+    updateSavedListMobile();
+}
+
+function closeSavedOverlay() {
+    const overlay = document.getElementById("saved-overlay");
+    if (overlay) overlay.classList.add("hidden");
+}
+
+function updateSavedListMobile() {
+    const list = document.getElementById("saved-list-mobile");
+    if (!list) return;
+
+    list.innerHTML = "";
+
+    savedCharacters.forEach((p, index) => {
+        const li = document.createElement("li");
+
+        const miniCanvas = document.createElement("canvas");
+        miniCanvas.width = 128;
+        miniCanvas.height = 128;
+        miniCanvas.style.width = "64px";
+        miniCanvas.style.height = "64px";
+
+        const info = document.createElement("div");
+        info.className = "saved-info";
+        info.innerHTML = `
+            <div class="saved-name">${p.name.fullName}</div>
+            <div class="saved-title">${p.title}</div>
+            <button class="saved-remove" onclick="removeSavedMobile(${index})">✕ Remove</button>
+        `;
+
+        li.appendChild(miniCanvas);
+        li.appendChild(info);
+        list.appendChild(li);
+
+        drawFace(miniCanvas, p.decks, p.skin, p.hair, p);
+    });
+}
+
+function removeSavedMobile(index) {
+    savedCharacters.splice(index, 1);
+    updateSavedList();
+    updateSavedListMobile();
 }
 
 

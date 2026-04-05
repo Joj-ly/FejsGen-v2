@@ -21,7 +21,10 @@
                 <header id="app-header">
                     <div class="logo" id="author-logo">
                         FejsGen 1.0
-                        <span class="logo-tooltip">By Arkraft</span>
+                        <div class="logo-tooltip">
+                            <span class="logo-tooltip-title">Developer Arkraft · Version 1</span>
+                            <span class="logo-tooltip-desc">Generates faces combined from hand-drawn illustrations</span>
+                        </div>
                     </div>
 
                     <div class="theme-title">
@@ -45,6 +48,20 @@
                     <div id="slot-hint">
                         <span class="hint-arrow">←</span>
                         <span class="hint-text">Press the button, dont be shy!</span>
+                    </div>
+                    <button class="slot-btn" id="save-toggle-btn">
+                        <span class="btn-label">Saved Characters</span>
+                    </button>
+                </div>
+
+                <!-- MOBILE SAVED OVERLAY -->
+                <div id="saved-overlay" class="hidden">
+                    <div id="saved-overlay-panel">
+                        <button class="close-btn" id="saved-overlay-close">X</button>
+                        <h3>Saved Characters</h3>
+                        <p class="saved-description">Click a character to save it. Download all as a ZIP file.</p>
+                        <ul id="saved-list-mobile"></ul>
+                        <button id="download-saved-mobile">Download Saved List</button>
                     </div>
                 </div>
 
