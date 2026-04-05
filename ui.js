@@ -232,8 +232,11 @@ async function showDetails(p) {
     // Koppla spara-knappen till denna karaktär
     const saveBtn = document.getElementById("save-from-popup");
     if (saveBtn) {
-        saveBtn.onclick = () => saveCharacter(p, dCanvas);
+        saveBtn.onclick = () => toggleSaveCharacter(p, dCanvas);
     }
+
+    // Uppdatera knappens state direkt
+    updateSaveBtnState(p);
 }
 
 
@@ -248,19 +251,62 @@ function closeDetailPanel() {
 
 
 // --------------------------------------------------
-// SPARA KARAKTÄR
+// SPARA / AVSPARA KARAKTÄR (toggle)
 // --------------------------------------------------
 
-function saveCharacter(p, canvas) {
-    const alreadySaved = savedCharacters.some(c => c.name.fullName === p.name.fullName);
-    if (alreadySaved) {
-        alert(`${p.name.fullName} is already saved!`);
-        return;
-    }
+function updateSaveBtnState(p) {
+    const saveBtn = document.getElementById("save-from-popup");
+    const label   = document.getElementById("save-btn-label");
+    const waxseal = document.getElementById("save-waxseal");
+    if (!saveBtn || !label || !waxseal) return;
 
-    const imageData = canvas ? canvas.toDataURL("image/png") : null;
-    savedCharacters.push({ ...p, imageData });
-    updateSavedList();
+    const isSaved = savedCharacters.some(c => c.name.fullName === p.name.fullName);
+
+    if (isSaved) {
+        saveBtn.classList.add("is-saved");
+        saveBtn.classList.remove("is-unsaving");
+        label.textContent = "Saved";
+        waxseal.src = "assets/ui/waxseal_s.svg";
+        waxseal.classList.remove("hidden", "waxseal-red");
+        waxseal.classList.add("waxseal-green");
+    } else {
+        saveBtn.classList.remove("is-saved", "is-unsaving");
+        label.textContent = "Save Character";
+        waxseal.classList.add("hidden");
+        waxseal.classList.remove("waxseal-green", "waxseal-red");
+    }
+}
+
+function toggleSaveCharacter(p, canvas) {
+    const alreadySaved = savedCharacters.some(c => c.name.fullName === p.name.fullName);
+    const label   = document.getElementById("save-btn-label");
+    const waxseal = document.getElementById("save-waxseal");
+    const saveBtn = document.getElementById("save-from-popup");
+
+    if (alreadySaved) {
+        // Visa "Unsaved" + waxseal_x kort, ta sedan bort
+        if (saveBtn) saveBtn.classList.add("is-unsaving");
+        if (label)   label.textContent = "Unsaved";
+        if (waxseal) {
+            waxseal.src = "assets/ui/waxseal_x.svg";
+            waxseal.classList.remove("hidden", "waxseal-green");
+            waxseal.classList.add("waxseal-red");
+        }
+
+        setTimeout(() => {
+            savedCharacters = savedCharacters.filter(c => c.name.fullName !== p.name.fullName);
+            updateSavedList();
+            updateSavedListMobile();
+            updateSaveBtnState(p);
+        }, 700);
+
+    } else {
+        // Spara karaktären
+        const imageData = canvas ? canvas.toDataURL("image/png") : null;
+        savedCharacters.push({ ...p, imageData });
+        updateSavedList();
+        updateSaveBtnState(p);
+    }
 }
 
 

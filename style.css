@@ -658,10 +658,58 @@ main {
 
 .save-btn,
 #save-from-popup {
+    position: relative;
     margin: 10px auto 20px auto;
-    padding: 10px 20px;
+    padding: 12px 28px;
     font-size: 15px;
     display: block;
+    font-family: "Caudex", serif;
+    border: 2px solid #302821;
+    outline: 1px solid #302821;
+    outline-offset: -4px;
+    background: url("assets/ui/bg_paper.png");
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+    overflow: visible;
+}
+
+#save-from-popup.is-saved {
+    background: #c8a84b;
+    border-color: #7a5c1a;
+    outline-color: #7a5c1a;
+    color: #3a2800;
+}
+
+#save-from-popup.is-unsaving {
+    background: #a33;
+    border-color: #700;
+    outline-color: #700;
+    color: #fff;
+}
+
+/* Waxseal i hörnet av save-knappen */
+.save-waxseal {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 54px;
+    height: 54px;
+    pointer-events: none;
+    transition: opacity 0.25s;
+}
+
+.save-waxseal.hidden {
+    display: none;
+}
+
+/* Vit SVG → grön */
+.save-waxseal.waxseal-green {
+    filter: sepia(1) hue-rotate(90deg) saturate(5) brightness(0.85);
+}
+
+/* Vit SVG → röd */
+.save-waxseal.waxseal-red {
+    filter: sepia(1) hue-rotate(320deg) saturate(6) brightness(0.9);
 }
 
 
