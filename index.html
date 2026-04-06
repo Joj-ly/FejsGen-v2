@@ -38,16 +38,28 @@
                 <!-- SLOT-KNAPP MELLAN HEADER OCH GRID -->
                 <div id="slot-bar">
                     <button class="slot-btn" id="generate-btn">
-                        <span class="btn-label" id="btnLabel">Generate New Faces</span>
+                        <div id="generate-label-wrap">
+                            <span class="btn-label" id="btnLabel">Generate New Faces</span>
+                            <div id="slot-hint">
+                                <span class="hint-arrow">←</span>
+                                <span class="hint-text">Press the button, dont be shy!</span>
+                            </div>
+                        </div>
                         <div class="slot-windows">
                             <div class="slot-window"><div class="slot-reel" id="reel-0"></div></div>
                             <div class="slot-window"><div class="slot-reel" id="reel-1"></div></div>
                             <div class="slot-window"><div class="slot-reel" id="reel-2"></div></div>
                         </div>
                     </button>
-                    <div id="slot-hint">
-                        <span class="hint-arrow">←</span>
-                        <span class="hint-text">Press the button, dont be shy!</span>
+                </div>
+
+                <!-- MOBILE ABOUT OVERLAY -->
+                <div id="about-overlay" class="hidden">
+                    <div id="about-overlay-panel">
+                        <button class="close-btn" id="about-overlay-close">X</button>
+                        <h3>FejsGen 1.0</h3>
+                        <p class="about-title">Developer Arkraft · Version 1</p>
+                        <p class="about-desc">Generates faces combined from hand-drawn illustrations</p>
                     </div>
                 </div>
 
@@ -85,6 +97,9 @@
                         <button class="slot-btn" id="save-toggle-btn">
                             <span class="btn-label">Saved Characters</span>
                         </button>
+                        <button class="slot-btn" id="about-btn">
+                            <span class="btn-label">About</span>
+                        </button>
                     </main>
 
                 </div>
@@ -105,10 +120,12 @@
                     <h3 id="char-title"></h3>
                     <div id="char-origin" style="margin-bottom: 10px; font-weight: 600;"></div>
 
-                    <canvas id="detail-canvas" width="256" height="256"></canvas>
+                    <div id="detail-canvas-wrap">
+                        <canvas id="detail-canvas" width="256" height="256"></canvas>
+                        <img id="save-waxseal" class="save-waxseal hidden" src="assets/ui/waxseal_s.svg" alt="">
+                    </div>
 
                     <button id="save-from-popup" class="save-btn">
-                        <img id="save-waxseal" class="save-waxseal hidden" src="assets/ui/waxseal_s.svg" alt="">
                         <span id="save-btn-label">Save Character</span>
                     </button>
 

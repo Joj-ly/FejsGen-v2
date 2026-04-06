@@ -11,12 +11,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     const btn = document.getElementById("generate-btn");
     if (btn) btn.addEventListener("click", triggerSlot);
 
-    // Position hint flush to the right of the centered button
-    const hint = document.getElementById("slot-hint");
-    if (btn && hint) {
-        const offset = btn.offsetWidth / 2 + 14;
-        hint.style.transform = `translateX(${offset}px)`;
-    }
 
     const downloadBtn = document.getElementById("download-saved");
     if (downloadBtn) downloadBtn.addEventListener("click", downloadSaved);
@@ -26,6 +20,12 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     const savedOverlayClose = document.getElementById("saved-overlay-close");
     if (savedOverlayClose) savedOverlayClose.addEventListener("click", closeSavedOverlay);
+
+    const aboutBtn = document.getElementById("about-btn");
+    if (aboutBtn) aboutBtn.addEventListener("click", openAboutOverlay);
+
+    const aboutOverlayClose = document.getElementById("about-overlay-close");
+    if (aboutOverlayClose) aboutOverlayClose.addEventListener("click", closeAboutOverlay);
 
     const downloadMobileBtn = document.getElementById("download-saved-mobile");
     if (downloadMobileBtn) downloadMobileBtn.addEventListener("click", downloadSaved);
@@ -84,13 +84,13 @@ function animateReel(reelEl, seq) {
 
         function step() {
             if (idx >= seq.length - 1) {
-                reelEl.style.transform = `translateY(${-(seq.length - 1) * 70}px)`;
+                reelEl.style.transform = `translateY(${-(seq.length - 1) * 91}px)`;
                 resolve();
                 return;
             }
             idx++;
             reelEl.style.transition = `transform ${interval}ms linear`;
-            reelEl.style.transform = `translateY(${-idx * 70}px)`;
+            reelEl.style.transform = `translateY(${-idx * 91}px)`;
             if (idx > seq.length - 8) interval = Math.min(interval + 30, 300);
             else if (idx < 5) interval = Math.max(interval - 10, 45);
             setTimeout(step, interval);
@@ -106,6 +106,7 @@ function triggerSlot() {
     if (!btn) return;
 
     btn.disabled = true;
+    btn.classList.remove('is-generated');
     label.textContent = 'Summon...';
 
     const hint = document.getElementById('slot-hint');
@@ -128,7 +129,8 @@ function triggerSlot() {
 
     Promise.all(promises).then(() => {
         btn.disabled = false;
-        label.textContent = 'Generate New Faces';
+        label.textContent = 'Generated';
+        btn.classList.add('is-generated');
         generatePortraitBatch();
     });
 }
@@ -279,19 +281,13 @@ function updateSaveBtnState(p) {
 
 function toggleSaveCharacter(p, canvas) {
     const alreadySaved = savedCharacters.some(c => c.name.fullName === p.name.fullName);
-    const label   = document.getElementById("save-btn-label");
-    const waxseal = document.getElementById("save-waxseal");
-    const saveBtn = document.getElementById("save-from-popup");
 
     if (alreadySaved) {
-        // Visa "Unsaved" + waxseal_x kort, ta sedan bort
-        if (saveBtn) saveBtn.classList.add("is-unsaving");
+        // Visa "Unsaved" i rött kort, ta sedan bort
+        const saveBtn = document.getElementById("save-from-popup");
+        const label   = document.getElementById("save-btn-label");
         if (label)   label.textContent = "Unsaved";
-        if (waxseal) {
-            waxseal.src = "assets/ui/waxseal_x.svg";
-            waxseal.classList.remove("hidden", "waxseal-green");
-            waxseal.classList.add("waxseal-red");
-        }
+        if (saveBtn) saveBtn.classList.add("is-unsaving");
 
         setTimeout(() => {
             savedCharacters = savedCharacters.filter(c => c.name.fullName !== p.name.fullName);
@@ -360,6 +356,16 @@ function removeSaved(index) {
 // --------------------------------------------------
 // MOBILE SAVED OVERLAY
 // --------------------------------------------------
+
+function openAboutOverlay() {
+    const overlay = document.getElementById("about-overlay");
+    if (overlay) overlay.classList.remove("hidden");
+}
+
+function closeAboutOverlay() {
+    const overlay = document.getElementById("about-overlay");
+    if (overlay) overlay.classList.add("hidden");
+}
 
 function openSavedOverlay() {
     const overlay = document.getElementById("saved-overlay");
