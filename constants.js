@@ -178,7 +178,7 @@ const simpleLastNames = [
 const standaloneLastNames = [
     "Grimsson", "Hargulf", "Torsen", "Ravndal", "Skjold",
     "Hargard", "Ulfsen", "Berglund", "Falk", "Hammar",
-    "Hargrim", "Torvald", "Skare", "Ravnsen", "Kämpe",
+    "Hargrim", "Torvald", "Skare", "Ravsen", "Kämpe",
     "Strid", "Kneckt", "Rask", "Modig", "Lidsman",
     "Linder", "Seger", "Sköld", "Smed", "Svarthövde",
     "Vargas", "Vilde", "Ärenbjörn", "Örn", "Räv"
@@ -207,7 +207,9 @@ const upbringingBackgrounds = [
     "Raised in a devout home, he learned rituals, discipline, and the comfort of old beliefs.",
     "Born into a military family, he grew up around steel, drills, and stories of honor and sacrifice.",
     "As an only child, he learned to rely on himself — and to carry silence well.",
-    "Growing up among many siblings taught him competition, cooperation, and how to make himself heard."
+    "Growing up among many siblings taught him competition, cooperation, and how to make himself heard.",
+    "Raised in a home of comfort and care, he grew up with gentle guidance and a heart that trusts the world easily.",
+    "Born to a humble but loving family, he learned early that a shared meal and a kind word are the truest riches."
 ];
 
 

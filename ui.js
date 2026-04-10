@@ -16,7 +16,26 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (downloadBtn) downloadBtn.addEventListener("click", downloadSaved);
 
     const saveToggleBtn = document.getElementById("save-toggle-btn");
-    if (saveToggleBtn) saveToggleBtn.addEventListener("click", openSavedOverlay);
+    if (saveToggleBtn) saveToggleBtn.addEventListener("click", () => {
+        if (window.innerWidth > 900) {
+            openSavedPanel();
+        } else {
+            openSavedOverlay();
+        }
+    });
+
+    const savedPanelClose = document.getElementById("saved-panel-close");
+    if (savedPanelClose) savedPanelClose.addEventListener("click", closeSavedPanel);
+
+    const savedTab = document.getElementById("saved-tab");
+    if (savedTab) savedTab.addEventListener("click", () => {
+        const panel = document.getElementById("saved-panel");
+        if (panel && panel.classList.contains("open")) {
+            closeSavedPanel();
+        } else {
+            openSavedPanel();
+        }
+    });
 
     const savedOverlayClose = document.getElementById("saved-overlay-close");
     if (savedOverlayClose) savedOverlayClose.addEventListener("click", closeSavedOverlay);
@@ -35,6 +54,9 @@ window.addEventListener("DOMContentLoaded", async () => {
         const reel = document.getElementById(`reel-${i}`);
         if (reel) buildReel(reel, ['?']);
     });
+
+    // Visa tom grid med platshållarkort direkt
+    initPortraitGrid();
 });
 
 // SVG-symboler från slots-mappen
@@ -137,6 +159,57 @@ function triggerSlot() {
 
 
 // --------------------------------------------------
+// PLATSHÅLLARGRID — visas direkt vid sidladdning
+// --------------------------------------------------
+
+function drawPlaceholder(canvas) {
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#302821";
+    ctx.font = "bold 96px 'Athelas', 'Caudex', Georgia, serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("?", canvas.width / 2, canvas.height / 2);
+}
+
+function initPortraitGrid() {
+    const grid = document.getElementById("portrait-grid");
+    if (!grid) return;
+
+    grid.innerHTML = "";
+
+    for (let i = 0; i < 18; i++) {
+        const middle = document.createElement("div");
+        middle.className = "frame-middle";
+
+        const card = document.createElement("div");
+        card.className = "portrait-card placeholder";
+
+        const canvas = document.createElement("canvas");
+        canvas.className = "portrait-canvas";
+        canvas.width = 256;
+        canvas.height = 256;
+
+        const nameEl = document.createElement("div");
+        nameEl.className = "portrait-name";
+        nameEl.innerText = "\u00a0"; // non-breaking space — håller höjden
+
+        const titleEl = document.createElement("div");
+        titleEl.className = "portrait-title";
+        titleEl.innerText = "\u00a0";
+
+        drawPlaceholder(canvas);
+
+        card.appendChild(canvas);
+        card.appendChild(nameEl);
+        card.appendChild(titleEl);
+        middle.appendChild(card);
+        grid.appendChild(middle);
+    }
+}
+
+
+// --------------------------------------------------
 // GENERERA 18 UNIKA PORTRÄTT
 // --------------------------------------------------
 
@@ -160,48 +233,41 @@ function generatePortraitBatch() {
 }
 
 // --------------------------------------------------
-// RITA GRID MED PORTRÄTT
+// RITA GRID MED PORTRÄTT — uppdaterar befintliga kort
 // --------------------------------------------------
 
 function updatePortraitGrid(portraits) {
     const grid = document.getElementById("portrait-grid");
     if (!grid) return;
 
-    grid.innerHTML = "";
+    const cards = grid.querySelectorAll(".portrait-card");
 
-    portraits.forEach(async (p, i) => {
+    portraits.forEach((p, i) => {
+        const card = cards[i];
+        if (!card) return;
 
-        const middle = document.createElement("div");
-        middle.className = "frame-middle";
-        middle.style.animationDelay = `${i * 40}ms`;
+        const canvas  = card.querySelector(".portrait-canvas");
+        const nameEl  = card.querySelector(".portrait-name");
+        const titleEl = card.querySelector(".portrait-title");
 
-        const card = document.createElement("div");
-        card.className = "portrait-card";
-
-        // Dubbel intern upplösning, ska visas via CSS (responsiv)
-        const canvas = document.createElement("canvas");
-        canvas.className = "portrait-canvas";
-        canvas.width = 256;
-        canvas.height = 256;
-
-        const nameEl = document.createElement("div");
-        nameEl.className = "portrait-name";
-        nameEl.innerText = p.name.fullName;
-
-        const titleEl = document.createElement("div");
-        titleEl.className = "portrait-title";
-        titleEl.innerText = p.title;
-
+        card.classList.remove("placeholder");
         card.onclick = () => showDetails(p);
 
-        card.appendChild(canvas);
-        card.appendChild(nameEl);
-        card.appendChild(titleEl);
+        // Staggerad delay per kort — canvasen tonas in efter att porträttet ritats
+        setTimeout(async () => {
+            canvas.classList.remove("portrait-reveal");
+            canvas.style.opacity = "0";
 
-        middle.appendChild(card);
-        grid.appendChild(middle);
+            nameEl.innerText  = p.name.fullName;
+            titleEl.innerText = p.title;
 
-        await drawFace(canvas, p.decks, p.skin, p.hair, p);
+            await drawFace(canvas, p.decks, p.skin, p.hair, p);
+
+            requestAnimationFrame(() => {
+                canvas.style.opacity = "";
+                canvas.classList.add("portrait-reveal");
+            });
+        }, i * 55);
     });
 }
 
@@ -376,6 +442,21 @@ function openSavedOverlay() {
 function closeSavedOverlay() {
     const overlay = document.getElementById("saved-overlay");
     if (overlay) overlay.classList.add("hidden");
+}
+
+function openSavedPanel() {
+    const panel = document.getElementById('saved-panel');
+    if (panel) panel.classList.add('open');
+    const tab = document.getElementById('saved-tab');
+    if (tab) tab.classList.add('open');
+    updateSavedList();
+}
+
+function closeSavedPanel() {
+    const panel = document.getElementById('saved-panel');
+    if (panel) panel.classList.remove('open');
+    const tab = document.getElementById('saved-tab');
+    if (tab) tab.classList.remove('open');
 }
 
 function updateSavedListMobile() {

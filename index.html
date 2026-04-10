@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FejsGen</title>
-    
+
     <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Caudex:wght@400;700&display=swap" rel="stylesheet">
 
@@ -13,33 +13,74 @@
 </head>
 <body>
 
-    <div class="page-shell frame-outer">
-        <div class="page-middle frame-middle">
-            <div class="page-content">
+    <!-- ABOUT OVERLAY -->
+    <div id="about-overlay" class="hidden">
+        <div id="about-overlay-panel">
+            <button class="close-btn" id="about-overlay-close">X</button>
+            <h3>FejsGen 1.0</h3>
+            <p class="about-desc">Each face is assembled from hand-drawn layers — head, eyes, nose, mouth and hair — creating around 18,000 distinctly unique combinations, paired with over 80,000 possible Nordic names. Every character also carries a background story shaped by their upbringing, origins and profession.</p>
+            <p class="about-credit">Developed by Arkraft · Version 1.0</p>
+        </div>
+    </div>
 
-                <!-- HEADER -->
-                <header id="app-header">
-                    <div class="logo" id="author-logo">
-                        FejsGen 1.0
-                        <div class="logo-tooltip">
-                            <span class="logo-tooltip-title">Developer Arkraft · Version 1</span>
-                            <span class="logo-tooltip-desc">Generates faces combined from hand-drawn illustrations</span>
+    <!-- MOBILE SAVED OVERLAY (bottom sheet) -->
+    <div id="saved-overlay" class="hidden">
+        <div id="saved-overlay-panel">
+            <button class="close-btn" id="saved-overlay-close">X</button>
+            <h3>Saved Characters</h3>
+            <p class="saved-description">Click a character to save it. Download all as a ZIP file.</p>
+            <ul id="saved-list-mobile"></ul>
+            <button id="download-saved-mobile">Download Saved List</button>
+        </div>
+    </div>
+
+    <!-- TRIPLE FRAME — fixed to viewport, content scrolls inside -->
+    <!-- LEFT SAVED TAB — sits ON outer frame (fixed) -->
+    <div id="saved-tab">
+        <span class="saved-tab-icon">⊕</span>
+        <span class="saved-tab-label">Saved Fejses</span>
+    </div>
+
+    <!-- SAVED PANEL DRAWER — slides in from left (fixed) -->
+    <aside id="saved-panel">
+        <div class="saved-panel-head">
+            <h3>Saved Characters</h3>
+            <p class="saved-description">Click a character to save it. Download all as a ZIP file.</p>
+        </div>
+        <ul id="saved-list"></ul>
+        <button id="download-saved">Download Saved List</button>
+    </aside>
+
+    <div class="page-shell">
+        <div class="page-middle">
+            <div class="page-inner">
+
+                <!-- SCROLLABLE CONTENT -->
+                <div class="page-scroll">
+
+                    <!-- HEADER -->
+                    <header id="app-header">
+                        <div class="logo" id="author-logo">
+                            FejsGen 1.0
+                            <div class="logo-tooltip">
+                                <span class="logo-tooltip-desc">Generates faces from hand-drawn illustrations</span>
+                            </div>
                         </div>
-                    </div>
+                        <div class="theme-title">
+                            <img src="assets/ui/header_03.svg" alt="Faces of the North" class="header-svg">
+                        </div>
+                        <div class="anno-label">ANNO 2026</div>
+                    </header>
 
-                    <div class="theme-title">
-                        <img src="assets/ui/header_03.svg" alt="Faces of the North" class="header-svg">
-                    </div>
+                    <!-- SEPARATOR -->
+                    <div class="section-rule"></div>
 
-                    <!-- ANNO-text ersätter gamla knappen -->
-                    <div class="anno-label">ANNO 2026</div>
-                </header>
-
-                <!-- SLOT-KNAPP MELLAN HEADER OCH GRID -->
-                <div id="slot-bar">
-                    <button class="slot-btn" id="generate-btn">
-                        <div id="generate-label-wrap">
-                            <span class="btn-label" id="btnLabel">Generate New Faces</span>
+                    <!-- SLOT BAR (paper bg, button left / slots right) -->
+                    <div id="slot-bar">
+                        <div id="generate-wrap">
+                            <button id="generate-btn">
+                                <span id="btnLabel">Generate New Faces</span>
+                            </button>
                             <div id="slot-hint">
                                 <span class="hint-arrow">←</span>
                                 <span class="hint-text">Press the button, dont be shy!</span>
@@ -50,63 +91,42 @@
                             <div class="slot-window"><div class="slot-reel" id="reel-1"></div></div>
                             <div class="slot-window"><div class="slot-reel" id="reel-2"></div></div>
                         </div>
-                    </button>
-                </div>
-
-                <!-- MOBILE ABOUT OVERLAY -->
-                <div id="about-overlay" class="hidden">
-                    <div id="about-overlay-panel">
-                        <button class="close-btn" id="about-overlay-close">X</button>
-                        <h3>FejsGen 1.0</h3>
-                        <p class="about-title">Developer Arkraft · Version 1</p>
-                        <p class="about-desc">Generates faces combined from hand-drawn illustrations</p>
                     </div>
-                </div>
 
-                <!-- MOBILE SAVED OVERLAY -->
-                <div id="saved-overlay" class="hidden">
-                    <div id="saved-overlay-panel">
-                        <button class="close-btn" id="saved-overlay-close">X</button>
-                        <h3>Saved Characters</h3>
-                        <p class="saved-description">Click a character to save it. Download all as a ZIP file.</p>
-                        <ul id="saved-list-mobile"></ul>
-                        <button id="download-saved-mobile">Download Saved List</button>
-                    </div>
-                </div>
-
-                <!-- CONTENT WRAPPER -->
-                <div class="content-wrapper">
-
-                    <!-- SAVED LIST PANEL -->
-                    <aside id="saved-panel">
-                        <div class="saved-frame-outer">
-                            <div class="saved-frame-inner">
-                                <h3>Saved Characters</h3>
-                                <p class="saved-description">Click a character to save it. Download all as a ZIP file.</p>
-                                <ul id="saved-list"></ul>
-                                <button id="download-saved">Download Saved List</button>
-                            </div>
-                        </div>
-                    </aside>
-
-                    <!-- MAIN CONTENT -->
-                    <main>
+                    <!-- CARD GRID with simple border -->
+                    <div class="grid-frame">
                         <div id="portrait-grid" class="grid-container">
                             <!-- Cards injected by ui.js -->
                         </div>
+                    </div>
+
+                    <!-- MOBILE-ONLY ACTION BUTTONS -->
+                    <div class="mobile-actions">
                         <button class="slot-btn" id="save-toggle-btn">
                             <span class="btn-label">Saved Characters</span>
                         </button>
                         <button class="slot-btn" id="about-btn">
                             <span class="btn-label">About</span>
                         </button>
-                    </main>
+                    </div>
+
+                    <!-- ABOUT FOOTER — inuti ramen, längst ned i scroll -->
+                    <footer id="about-footer">
+                        <div class="about-footer-box">
+                            <h3 class="about-footer-heading">About</h3>
+                            <p class="about-footer-text">Each face is assembled from hand-drawn layers — head, eyes, nose, mouth and hair — creating around 18,000 distinctly unique combinations, paired with over 80,000 possible Nordic names. Every character also carries a background story shaped by their upbringing, origins and profession.</p>
+                            <p class="about-footer-credit">Developed by Arkraft · Version 1.0</p>
+                            <p class="about-footer-copyright">© 2026 Arkraft. All rights reserved.</p>
+                        </div>
+                    </footer>
 
                 </div>
+                <!-- /page-scroll -->
 
             </div>
         </div>
     </div>
+    <!-- /page-shell -->
 
     <!-- POPUP / DETAIL PANEL -->
     <div id="detail-panel" class="detail hidden">
